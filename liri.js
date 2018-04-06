@@ -1,31 +1,23 @@
+//Gather the packages required
 var dotenv = require("dotenv").config();
 var fs = require("fs");
-//console.log(dotenv.parsed);
 var request = require("request");
 var inquirer = require('inquirer');
 var omdbKeys = require('omdb');
 var twitterKeys = require('twitter');
-
 var spotifyKeys = require('node-spotify-api');
- 
-
-// Using the require keyword lets us access all of the exports
-// in our keys.js file
 var keys = require("./keys.js");
 
+//Specify the values in the envirnments 
+//returned from dotenv
 var clientSpotify = keys.spotify;
- 
 var clientTwitter = keys.twitter;
-
 var clientOMDB = keys.omdb;
  
-
- 
-
-
-
+//Retrieve user choice 
 var siriChoice = process.argv[2];
 
+//Determine action based on user choice
 switch(siriChoice){
     case('my-tweets'):
       //Twitter response
@@ -49,7 +41,7 @@ switch(siriChoice){
       break;
 }
 
-// Bonus  create function to record output to log file. 
+
 
 function spotifySearch(songTrack = 'The Sign'){
     // Note: No paramaters passed defaults to 'The Sign'
@@ -92,6 +84,9 @@ function spotifySearch(songTrack = 'The Sign'){
          console.log("Track Title :",spotifyObject.Track);
          console.log("Preview URL :" ,spotifyObject.Preview);
          console.log('\n');
+
+         //record result
+         recordOutput(siriChoice, spotifyObject);
        }
      })
     .catch(function(err) {
@@ -125,6 +120,9 @@ function omdbSearch(movieTitle='Mr. Nobody'){
     console.log("Language : " + movieObject.Language);
     console.log("Plot     : " + movieObject.Plot);
     console.log("Actors   : " + movieObject.Actors);
+
+    //record output
+    recordOutput(siriChoice, movieObject);
     
   }else{
       console.log(error);
@@ -174,4 +172,10 @@ function randomSearch(){
 
       
       });
+}
+
+
+// Bonus  create function to record output to log file. 
+function recordOutput(choice, objectOutput){
+    fs.appendFile("log.txt", choice +  ":" + JSON.stringify(objectOutput), err) ;
 }
