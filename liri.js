@@ -1,4 +1,5 @@
 var dotenv = require("dotenv").config();
+var fs = require("fs");
 //console.log(dotenv.parsed);
 var request = require("request");
 var inquirer = require('inquirer');
@@ -30,27 +31,19 @@ switch(siriChoice){
       //Twitter response
       console.log("Twitter Option");
       break;
-    case('spotify-this-song'):
-      //Spotify Option
-       
-      spotifySearch(process.argv[3]);
-      break;
     case('movie-this'):
-      
-      //Twitter response
-       
       omdbSearch(process.argv[3]);
       break;
+
     case('spotify-this-song'):
-      //Twitter response
-       
       spotifySearch(process.argv[3]);
-      
       break;
       
     case('do-what-it-says') :
       console.log("Play selections from random.txt");
+      randomSearch();
       break;
+
     default:
       console.log("Invalid Entry");
       break;
@@ -70,21 +63,28 @@ function spotifySearch(songTrack = 'The Sign'){
      .search({ type: 'track', query: songTrack, limit: 20 })
      .then(function(response) {
        var spotifyArray = [];
-       for(var i =0; i < response.tracks.items.length; i++){
+       for(var i =0; i < response.tracks.items.length -1; i++){
         // Only using the track items returned in object
-        // console.log(response.tracks.items);
+         //console.log(response.tracks.items);
          var trackInfo = response.tracks.items;
          var artistArray = [];
          for(var artistIndex = 0 ; artistIndex < trackInfo[i].album.artists.length; artistIndex++ ){
             // In case there are multiple objects returned from artists
-            artistArray.push(trackInfo[i].artists[artistIndex].name );
+            //var aName = trackInfo[i].artists[artistIndex].name === null? "N/A":trackInfo[i].artists[artistIndex].name;
+            if(trackInfo[i].artists.length < 1) {
+                artistArray.push('N/A');
+            }else {
+                artistArray.push(trackInfo[i].artists[artistIndex].name );
+                 
+            }
+           
          } 
         //Create object for use in logging function needed for bonus 
          var spotifyObject = {
             Artist : artistArray.join(','),
-            Album : trackInfo[i].album.name,
-            Track : trackInfo[i].name,
-            Preview : trackInfo[i].preview_url
+            Album : trackInfo[i].album.name === null? "N/A":trackInfo[i].album.name,
+            Track : trackInfo[i].name === null? "N/A" : trackInfo[i].name ,
+            Preview : trackInfo[i].preview_url === null? "N/A" : trackInfo[i].preview_url
          };
          // Display track information
          console.log("Artists     :",spotifyObject.Artist);
@@ -132,4 +132,46 @@ function omdbSearch(movieTitle='Mr. Nobody'){
  
 });
 
+}
+
+function randomSearch(){
+    fs.readFile("random.txt", "utf8", function(error, data) {
+
+        // If the code experiences any errors it will log the error to the console.
+        if (error) {
+          return console.log(error);
+        }
+      
+        // We will then print the contents of data
+        console.log(data);
+      
+        // Then split it by commas (to make it more readable)
+        var dataArr = data.split(",");
+         
+      
+         
+        //New Switch Statement, this time on dataArr
+        switch(dataArr[0]){
+            case('my-tweets'):
+              //Twitter response
+              console.log("Twitter Option");
+              break;
+            case('movie-this'):
+              omdbSearch(dataArr[1]);
+              break;
+        
+            case('spotify-this-song'):
+              spotifySearch(dataArr[1]);
+              break;
+              
+             
+        
+            default:
+              console.log("Invalid Entry");
+              break;
+        }
+        
+
+      
+      });
 }
