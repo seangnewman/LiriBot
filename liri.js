@@ -162,5 +162,16 @@ function randomSearch(){
 
 // Bonus  create function to record output to log file. 
 function recordOutput(choice, objectOutput){
-    fs.appendFile("log.txt", choice +  ":" + JSON.stringify(objectOutput), err) ;
+    
+    var objectText = '';
+    for(var prop in objectOutput){
+        objectText += prop + " = " + objectOutput[prop] + " ";
+    }
+    
+    var appendText = choice +  " : " + objectText + "\n"
+    fs.appendFile("log.txt", appendText, function(err){
+        if(err){
+            throw err;
+        }
+    } );
 }
