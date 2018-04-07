@@ -7,6 +7,10 @@ var omdbKeys = require('omdb');
 var twitterKeys = require('twitter');
 var spotifyKeys = require('node-spotify-api');
 var keys = require("./keys.js");
+var moment = require('moment');
+
+
+
 
 //Specify the values in the envirnments 
 //returned from dotenv
@@ -22,6 +26,7 @@ switch(siriChoice){
     case('my-tweets'):
       //Twitter response
       console.log("Twitter Option");
+      twitterSearch();
       break;
     case('movie-this'):
       omdbSearch(process.argv[3]);
@@ -40,7 +45,31 @@ switch(siriChoice){
       console.log("Invalid Entry");
       break;
 }
+function twitterSearch(){
+  // returns the last 20 tweets
+   
+   // console.log(moment.moment());
+   var twitter = new twitterKeys({
+    consumer_key: clientTwitter.consumer_key,
+    consumer_secret: clientTwitter.consumer_secret,
+    access_token_key: clientTwitter.access_token_key,
+    access_token_secret: clientTwitter.access_token_secret
+  });
+  var params = {screen_name: 'newmanuevers',  count : 20};
+  twitter.get('statuses/user_timeline', params, function(error, tweets, response) {
+  if (!error) {
+    for(var i=0; i < tweets.length; i++){
+      var twitterObject = {
+        Created : tweets[i].created_at,
+        Text : tweets[i].text,
+      };
+        console.log(twitterObject.Created + ": " + twitterObject.Text);
+        recordOutput(siriChoice, twitterObject);
+      }
+    }
+  });
 
+}
 
 
 function spotifySearch(songTrack = 'The Sign'){
