@@ -1,7 +1,7 @@
 {
   "name": "liri-node-app",
   "version": "1.0.0",
-  "description": "Siri Like App that responds to input from user",
+  "description": "A Siri clone without the intelligence",
   "main": "liri.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,17 +11,15 @@
     "url": "git+https://github.com/seangnewman/liri-node-app.git"
   },
   "keywords": [
-    "liri",
     "dotenv",
     "inquirer",
     "moment",
     "node-spotify-api",
-    "omdb",
+    "omb",
     "request",
-    "spotify",
     "twitter"
   ],
-  "author": "SGN",
+  "author": "newmanuevers",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/seangnewman/liri-node-app/issues"
@@ -30,7 +28,7 @@
   "dependencies": {
     "dotenv": "^5.0.1",
     "inquirer": "^5.2.0",
-    "moment": "^2.22.0",
+    "moment": "^2.22.1",
     "node-spotify-api": "^1.0.7",
     "omdb": "^0.8.0",
     "request": "^2.85.0",
